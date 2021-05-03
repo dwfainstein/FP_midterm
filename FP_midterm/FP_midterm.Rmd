@@ -38,14 +38,19 @@ combined <- map_dfr(15:18, ~download_file(.), .id = "file")
 #Tidy up combined data frame: focus on number of students, exlude percentages and drop NAs
 combined_clean <- combined %>% 
   filter(`Student Group` == "White" | `Student Group` == "Hispanic/Latino") %>% 
-  select(-`Number Proficient (Level 3 or 4)`,
-         -`Percent Proficient (Level 3 or 4)`,
-         -`Percent Level 4`,
-         -`Percent Level 3`,
-         -`Percent Level 2`,
-         -`Percent Level 1`,
-         -`Participation Rate`,
-         -`Number Proficient`) %>% 
+  select(`Academic Year`,
+         `District`,
+         `School`,
+         `Student Group`,
+         `Grade Level`,
+         `Number Level 1`,
+         `Number Level 2`,
+         `Number Level 3`,
+         `Number Level 4`) %>% 
+  pivot_longer(cols = starts_with("Number"),
+               names_to = "level",
+               values_to = "n") %>% 
+  mutate(level = gsub("Number Level", "", level)) %>% 
   drop_na()
 
 ```
@@ -56,6 +61,11 @@ Sum the n across grades and school for each district within each academic year, 
 
 ```{r summing_calculating}
 # David will try this section too - kind of a natural follow up to Part 1
+
+sum_grouped <- combined_clean %>% 
+  group_by(`School ID`) %>% 
+  
+  
 
 
 ```
