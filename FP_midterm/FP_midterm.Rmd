@@ -5,7 +5,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE)
 
 #Note: see DA's guidance on caching and clearing the cache as needed.
 ```
@@ -23,28 +23,14 @@ Conduct some basic data cleaning to make your data file look like the following.
 ```{r importing}
 library(purrr)
 library(readr)
+library(fs)
 # David will try this section - open to help, or support when I get stuck!
 download_file <- function(year) {
   link <- glue::glue("https://www.oregon.gov/ode/educator-resources/assessment/TestResults20{year}/pagr_schools_ela_raceethnicity_{year-1}{year}.xlsx")
   rio::import(link, setclass = "tibble", na = c("-", "--", "*"))
 }
 
-# list_data <- 
-
-oneyear <- download_file(15)
-
-# files <- map_dfr(download_file(15), read_csv)
-# pseudo-code:
-#   a <- 15:18
-#   map thru download_file for a instances
-#   assign to object
-#   staple together as one dataframe
-
-OR_doefiles <- c(download_file(15), download_file(16), download_file(17), download_file(18))
-#this gets me close, just need to do it in a map_dfr to staple together
-
-combined <- map_dfr(OR_doefiles, read_csv)
-#some issue with filenames.. I think I'll need to use list.files
+combined <- map_dfr(15:18, ~download_file(.), .id = "file")
 
 ```
 
