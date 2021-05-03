@@ -20,17 +20,33 @@ Conduct some basic data cleaning to make your data file look like the following.
 * Select variables related to the number of students in each of the levels (1:4), and not percentages or collapsed levels.
 * Remove any row that has missing data in any of the n variables
 
-```{r importing}
+```{r importing_cleaning}
 library(purrr)
 library(readr)
 library(fs)
-# David will try this section - open to help, or support when I get stuck!
+library(tidyverse)
+
+#code from DA
 download_file <- function(year) {
   link <- glue::glue("https://www.oregon.gov/ode/educator-resources/assessment/TestResults20{year}/pagr_schools_ela_raceethnicity_{year-1}{year}.xlsx")
   rio::import(link, setclass = "tibble", na = c("-", "--", "*"))
 }
 
+#Single-line read-in & staple together data frames
 combined <- map_dfr(15:18, ~download_file(.), .id = "file")
+
+#Tidy up combined data frame: focus on number of students, exlude percentages and drop NAs
+combined_clean <- combined %>% 
+  filter(`Student Group` == "White" | `Student Group` == "Hispanic/Latino") %>% 
+  select(-`Number Proficient (Level 3 or 4)`,
+         -`Percent Proficient (Level 3 or 4)`,
+         -`Percent Level 4`,
+         -`Percent Level 3`,
+         -`Percent Level 2`,
+         -`Percent Level 1`,
+         -`Participation Rate`,
+         -`Number Proficient`) %>% 
+  drop_na()
 
 ```
 
@@ -38,9 +54,8 @@ combined <- map_dfr(15:18, ~download_file(.), .id = "file")
 
 Sum the n across grades and school for each district within each academic year, student group, and level. Calculate the number of schools (unique schools listed) for each district. Also move your data to a wider format where the student groups become new columns, filled by the district n. Remove districts that did not report numbers for one or both student groups (i.e., drop missing data from the new columns).
 
-```{r summing}
+```{r summing_calculating}
 # David will try this section too - kind of a natural follow up to Part 1
-
 
 
 ```
