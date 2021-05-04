@@ -72,6 +72,9 @@ Sum the n across grades and school for each district within each academic year, 
   summarise(n = sum(n)) %>% 
   pivot_wider(names_from = `Student Group`,
               values_from = "n")
+
+sum_grouped_arranged <- sum_grouped [, c(1, 2, 4, 3, 5, 6)]
+sum_grouped_arranged
   
 
   
