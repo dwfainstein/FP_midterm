@@ -84,8 +84,14 @@ arrange(sum_grouped_arranged, `District`)
 Estimate the average achievement differences in terms of an effect size for every school district in the state that reported data on both student groups (i.e., using the data we created above), for each academic year. Conduct this analysis twice, once using group_by() %>% nest() map() and once using nest_by() %>% summarize().
 
 ``` {r estimating average diffs}
-
-# remotes::install_github("datalorax/gapr")
+#ignore the below. This was to raise the API limit
+#remotes::install_github("datalorax/gapr")
+#remotes::install_github("dpc10ster/RJafroc@662c4bf3bcd725d8fa148a3e7db69168294ae57e")
+#Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
+#writeLines('PATH="${RTOOLS40_HOME}\\usr\\bin;${PATH}"', con = "~/.Renviron")
+#install.packages("remote")
+#usethis::create_github_token()
+#usethis::edit_r_environ()
 
 library(gapr)
 d[1:4, ] %>% # data source - just first four rows for first district
