@@ -62,9 +62,12 @@ Sum the n across grades and school for each district within each academic year, 
 ```{r summing_calculating}
 # David will try this section too - kind of a natural follow up to Part 1
 
-sum_grouped <- combined_clean %>% 
-  group_by(`School ID`) %>% 
-  
+  sum_grouped <- combined_clean %>% 
+  group_by(`Academic Year`, `District`, `Student Group`, `level`) %>% 
+  summarise(n = sum(n)) %>% 
+  pivot_wider(names_from = `Student Group`,
+              values_from = "n")
+#close; need an n_schools per district
   
 
 
