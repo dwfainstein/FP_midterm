@@ -6,8 +6,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-#Note: see DA's guidance on caching and clearing the cache as needed.
+knitr::opts_chunk$set(cache = TRUE)
+#Note: see DA's guidance on caching and clearing the cache as needed. If you run into trouble, clear the Knitr cache from the "Knit" menu above.
 ```
 
 # Part A
