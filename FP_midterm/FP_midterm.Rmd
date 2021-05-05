@@ -94,15 +94,27 @@ Estimate the average achievement differences in terms of an effect size for ever
 #usethis::edit_r_environ()
 
 library(gapr)
-d[1:4, ] %>% # data source - just first four rows for first district
-  estimate_v("white", "hispanic_latino") # columns for reference/focal groups
+combined[1:4, ] %>% # data source - just first four rows for first district
+  estimate_v("White", "Hispanic/Latino") # columns for reference/focal groups
 
+#analysis 1
+combined %>%
+  group_by(`Student Group`) %>%
+  nest() %>%
+  map()
+
+#analysis 2
+combined %>%
+  nest_by(`Student Group`) %>%
+  summarize()
 ```
 
 ## Task 2
 
 Reproduce the following plot to confirm that the estimates are equivalent across methods
 ``` {r reproduce_plot}
+
+
 
 ````
 
@@ -111,10 +123,19 @@ Reproduce the following plot to confirm that the estimates are equivalent across
 The plot below shows the achievement difference estimates for one school district across years. Produce a similar plot to the below for each of the first 100 school districts. Once you’ve created all the plots, reproduce them again using an alternative method. Make sure you don’t miss the caption noting the number of schools in the district.
 
 ``` {r another_plot_production}
-dists <- unique(v$district)[1:100]
+#dists <- unique(v$district)[1:100]
 
-model_list_object %>% 
-  filter(district %in% dists)
+#model_list_object %>% 
+#  filter(district %in% dists)
+
+
+#work in progress. It looks like the data is not set-up correctly. Might need to pivot wider to make student groups their own individual columns. 
+head(combined_clean)
+
+combined_clean %>%
+  filter(`District` == "Adrian SD 61") %>%
+  ggplot(aes(n, `Academic Year`)) +
+  geom_errorbar(mapping = aes(x = `Academic Year`, ymin = 0.3, ymax = -0.1))
 
 ````
 
