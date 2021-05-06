@@ -2,6 +2,8 @@
 title: "FP_midterm"
 Author: "Janette Avelar David Fainstein Joe Swinehart Makayla Whitney"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -35,7 +37,7 @@ download_file <- function(year) {
 #Single-line read-in & staple together data frames
 combined <- map_dfr(15:18, ~download_file(.), .id = "file")
 
-#Tidy up combined data frame: focus on number of students, exlude percentages and drop NAs
+#Tidy up combined data frame: focus on number of students, exclude percentages and drop NAs
 combined_clean <- combined %>% 
   filter(`Student Group` == "White" | `Student Group` == "Hispanic/Latino") %>% 
   select(`Academic Year`,
@@ -94,19 +96,19 @@ Estimate the average achievement differences in terms of an effect size for ever
 #usethis::edit_r_environ()
 
 library(gapr)
-combined[1:4, ] %>% # data source - just first four rows for first district
-  estimate_v("White", "Hispanic/Latino") # columns for reference/focal groups
+# Reference estimate_v() from assignment:
+# sum_grouped_arranged[1:4, ] %>% # data source - just first four rows for first district
+#   estimate_v("White", "Hispanic/Latino") # columns for reference/focal groups
 
-#analysis 1
-combined %>%
-  group_by(`Student Group`) %>%
-  nest() %>%
-  map()
+# Analysis 1
+est1 <-
+sum_grouped_arranged %>% 
+  group_by(`Academic Year`, `District`) %>% 
+  nest() %>% 
+  map(.$data, estimate_v(.x[1:4,], "White", "Hispanic/Latino"))
+  
 
-#analysis 2
-combined %>%
-  nest_by(`Student Group`) %>%
-  summarize()
+
 ```
 
 ## Task 2
