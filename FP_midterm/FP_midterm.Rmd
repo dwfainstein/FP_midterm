@@ -105,9 +105,13 @@ est1 <-
 sum_grouped_arranged %>% 
   group_by(`Academic Year`, `District`) %>% 
   nest() %>% 
-  mutate(est_values = map(.$data, ~estimate_v("White", "Hispanic/Latino"))
+  mutate(list(est_values = map(.$data, ~estimate_v("White", "Hispanic/Latino")))
   
-
+# Analysis 2
+est2 <- sum_grouped_arranged %>% 
+  ungroup() %>% 
+  nest_by(`Academic Year`, `District`) %>% 
+  summarize(est_values = map(.$data, ~estimate_v("White", "Hispanic/Latino"))
 
 ```
 
