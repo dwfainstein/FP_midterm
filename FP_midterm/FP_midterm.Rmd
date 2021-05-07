@@ -105,7 +105,7 @@ est1 <-
 sum_grouped_arranged %>% 
   group_by(`Academic Year`, `District`) %>% 
   nest() %>% 
-  map(.$data, estimate_v(.x[1:4,], "White", "Hispanic/Latino"))
+  mutate(est_values = map(.$data, ~estimate_v("White", "Hispanic/Latino"))
   
 
 
