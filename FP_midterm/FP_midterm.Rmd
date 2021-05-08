@@ -102,12 +102,11 @@ Estimate the average achievement differences in terms of an effect size for ever
 
 # Analysis 1
 est1 <- sum_grouped_arranged %>% 
-  group_by(`Academic Year`, `District`) %>% 
+  group_by(`District`) %>% 
   nest() %>% 
-  mutate(est_values = vector("list", length("data"))) %>%
-  map(.data$data, ~estimate_v("White", "Hispanic/Latino"))
+  mutate(est_values = map(data, ~estimate_v(.x, "White", "Hispanic/Latino")))
 
-map_est <- map(, ~estimate_v("White", "Hispanic/Latino"))
+# map_est <- map(, ~estimate_v("White", "Hispanic/Latino"))
          
 
 #wrap in list?
