@@ -158,11 +158,11 @@ The plot below shows the achievement difference estimates for one school distric
 gap_est <- est2 %>% 
   filter(`District` == "Bandon SD 54") %>% 
   ggplot(aes(`Academic Year`, v_2)) +
-  geom_errorbar(mapping = aes(ymin = auc_2, ymax = v_se_2)) +
+  #error bars below are specific to Bandon SD 54, where I pulled the 7th element from est2 dataframe. I think we can use a similar approach to average the v_se_2 values across the first 100 schools
+  geom_errorbar(mapping = aes(ymin = (v_2 - est2$v_se_2[7]), ymax = (v_2 + est2$v_se_2[7]))) +
   geom_point(aes(`Academic Year`, v_2))
 
-
-
+gap_est
 ````
 
 ## Task 4
