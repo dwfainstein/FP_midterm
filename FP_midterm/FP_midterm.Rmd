@@ -28,6 +28,7 @@ library(readr)
 library(fs)
 library(tidyverse)
 library(gapr)
+library(ggplot2)
 
 #code from DA
 download_file <- function(year) {
@@ -121,6 +122,16 @@ colnames(est2)[colnames(est2) %in% c("auc", "v", "v_se")] <-c("auc_2", "v_2", "v
 est1_2 <- left_join(est1_models, est2)
 
 #not sure if we need a combined data frame to do this part--we might be lost in conceptualizing what we're actually plotting and how with models
+estimate_equiv <- est1_2 %>% 
+  ggplot(aes(v, v_2)) +
+  geom_point() +
+  geom_smooth() +
+  theme(axis.title.x = "Estimates with nest()",
+        axis.title.y = "Estimates with unnest()") +
+  theme_minimal()
+
+estimate_equiv
+
 ````
 
 ## Task 3
