@@ -27,6 +27,7 @@ library(purrr)
 library(readr)
 library(fs)
 library(tidyverse)
+library(gapr)
 
 #code from DA
 download_file <- function(year) {
@@ -95,23 +96,29 @@ Estimate the average achievement differences in terms of an effect size for ever
 #usethis::create_github_token()
 #usethis::edit_r_environ()
 
-library(gapr)
 # Reference estimate_v() from assignment:
 # sum_grouped_arranged[1:4, ] %>% # data source - just first four rows for first district
 #   estimate_v("White", "Hispanic/Latino") # columns for reference/focal groups
 
 # Analysis 1
-est1 <-
-sum_grouped_arranged %>% 
+est1 <- sum_grouped_arranged %>% 
   group_by(`Academic Year`, `District`) %>% 
   nest() %>% 
-  mutate(list(est_values = map(.$data, ~estimate_v("White", "Hispanic/Latino")))
+  mutate(est_values = vector("list", length("data"))) %>%
+  map(.data$data, ~estimate_v("White", "Hispanic/Latino"))
+
+map_est <- map(, ~estimate_v("White", "Hispanic/Latino"))
+         
+
+#wrap in list?
+# The example code has d[1:4, ]. This is just to select the first four rows, which is the first district for the first year. The `estimate_v()` function assumes you are feeding it a data frame for one district for one year. You then just give it the columns you want it to estimate the gap from. So in your code, you need to remove the [1:4, ] part, because you’ve already got data for one district by the way that you’ve nested it. You should also be using mutate, and it looks like you’re missing a tilde (~).
+
   
 # Analysis 2
 est2 <- sum_grouped_arranged %>% 
   ungroup() %>% 
   nest_by(`Academic Year`, `District`) %>% 
-  summarize(est_values = map(.$data, ~estimate_v("White", "Hispanic/Latino"))
+  summarize(estimate_v(.data$data, "White", "Hispanic/Latino"))
 
 ```
 
