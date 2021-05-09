@@ -29,6 +29,7 @@ library(fs)
 library(tidyverse)
 library(gapr)
 library(ggplot2)
+library(glue)
 
 #code from DA
 download_file <- function(year) {
@@ -118,10 +119,10 @@ est1_models <- est1 %>%
 # differentiate est 1 from est2
 colnames(est2)[colnames(est2) %in% c("auc", "v", "v_se")] <-c("auc_2", "v_2", "v_se_2")
 
-#stick together
+# stick together
 est1_2 <- left_join(est1_models, est2)
 
-#not sure if we need a combined data frame to do this part--we might be lost in conceptualizing what we're actually plotting and how with models
+# plot
 estimate_equiv <- est1_2 %>% 
   ggplot(aes(v, v_2)) +
   geom_point() +
@@ -164,11 +165,48 @@ gap_est <- est2 %>%
 
 gap_est
 
-est1 %>%
-  mutate(plot = list(data, ~{
-    ggplot(aes(n, v)) +
-      geom_errorbar(mapping = aes(ymin = (v_2 - est2$v_se_2[7]), ymax = (v_2 +   
-                    est2$v_se_2[7]))) +
+# list of 100 unique districts
+
+# Janette's attempt:
+# First 100 unique districts:
+dists <- unique(est2$`District`)[1:100]
+# Next, a single example, simplified:
+est2 %>% 
+  filter(`District` == "Bandon SD 54") %>% 
+  ggplot(., aes(x = `Academic Year`, y = v_2)) +
+      geom_errorbar(mapping = aes(ymin = (v_2 - v_se_2), ymax = (v_2 + v_se_2))) +
+      geom_point(aes(`Academic Year`, v_2)) +
+      guides(fill = "none") +
+      labs(title = "Achievement Gap Estimates:",
+           x = "School Year",
+           y = "Average achievement difference (SD units)")
+# Now all plots:
+plots <- est2 %>%
+  ungroup() %>% 
+  nest_by(`District`) %>% #using nest_by() instead of nest() b/c I think we need rowwise function
+  filter(`District` %in% dists) %>% 
+  mutate(plots = map(.$data, ~{ #.$data is a potential area that's throwing an error
+    ggplot(.x, aes(`Academic Year`, v_2)) +
+      geom_errorbar(mapping = aes(ymin = (v_2 - v_se_2), ymax = (v_2 + v_se_2))) + #Trying to generalize from ex.
+      geom_point(aes(`Academic Year`, v_2)) +
+      guides(fill = "none") +
+      labs(title = glue("Achievement Gap Estimates: {`District`}"),
+           x = "School Year",
+           y = "Average achievement difference (SD units)")
+    })
+) # ERROR: "plots" must be size 1, not 100
+# Is it saying this is trying to create 100 plots for each of the 100 rows?
+# If so, no idea.
+# If not, no idea.
+#To pull up a plot:
+plots$plots[[4]]
+
+
+# Here's the code that was in when I started:
+map(est2, ~{
+    ggplot(aes(`Academic Year`, v_2)) +
+      geom_errorbar(mapping = aes(ymin = (v_2 - est2$v_se_2[.x]), ymax = (v_2 +   
+                    est2$v_se_2[.x]))) +
       geom_point(aes(`Academic Year`, v_2))
       scale_fill_distiller(type = "seq",
                            limits = c(0, max(est1$n)),
@@ -181,7 +219,6 @@ est1 %>%
            x = "School Year",
            y = "Average achievement difference (SD units)"
       )}))
-
 ````
 
 ## Task 4
