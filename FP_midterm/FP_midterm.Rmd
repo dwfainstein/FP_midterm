@@ -181,16 +181,16 @@ est2 %>%
            x = "School Year",
            y = "Average achievement difference (SD units)")
 # Now all plots:
-plots <- est2 %>%
+plots <- est1 %>%
   ungroup() %>% 
-  nest_by(`District`) %>% #using nest_by() instead of nest() b/c I think we need rowwise function
+  # nest_by(`District`) %>% #using nest_by() instead of nest() b/c I think we need rowwise function
   filter(`District` %in% dists) %>% 
-  mutate(plots = map(.$data, ~{ #.$data is a potential area that's throwing an error
-    ggplot(.x, aes(`Academic Year`, v_2)) +
-      geom_errorbar(mapping = aes(ymin = (v_2 - v_se_2), ymax = (v_2 + v_se_2))) + #Trying to generalize from ex.
-      geom_point(aes(`Academic Year`, v_2)) +
+  mutate(plots = map2(models, `District`, ~{ #.$data is a potential area that's throwing an error
+    ggplot(.x, aes(`Academic Year`, v)) +
+      geom_errorbar(mapping = aes(ymin = (v - v_se), ymax = (v + v_se))) + #Trying to generalize from ex.
+      geom_point(aes(`Academic Year`, v)) +
       guides(fill = "none") +
-      labs(title = glue("Achievement Gap Estimates: {`District`}"),
+      labs(title = glue("Achievement Gap Estimates: {.y}"),
            x = "School Year",
            y = "Average achievement difference (SD units)")
     })
@@ -199,7 +199,7 @@ plots <- est2 %>%
 # If so, no idea.
 # If not, no idea.
 #To pull up a plot:
-plots$plots[[4]]
+plots$plots[[1]]
 
 
 # Here's the code that was in when I started:
