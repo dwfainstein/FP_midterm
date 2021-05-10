@@ -125,10 +125,10 @@ est1_2 <- left_join(est1_models, est2)
 # plot
 estimate_equiv <- est1_2 %>% 
   ggplot(aes(v, v_2)) +
-  geom_point() +
-  geom_smooth() +
-  theme(axis.title.x = "Estimates with nest()",
-        axis.title.y = "Estimates with unnest()") +
+  geom_point(color = "#d3d3d3") +
+  geom_smooth(color = "#6495ed") +
+  theme(axis.title.x = "V ('nest_by() %>% summarize()')",
+        axis.title.y = "V ('group_by() %>% nest() %>% mutate() %>% map()')") +
   theme_minimal()
 
 estimate_equiv
