@@ -230,7 +230,32 @@ map(est2, ~{
 Save the plots into a “plots” directory. Make sure the file names are meaningful.
 
 ``` {r Save_to_dir}
-ggplot()
+# 1. create a directory
+fs::dir_create(here::here("plots", "districts"))
+# 2. create file paths
+files <- str_replace_all(tolower(plots$District), " ", "-")
+# find the spaces and replace them with dashes, while also changing everything to lowercase
+paths <- here::here("plots", "districts", glue("{files}.png"))
+paths
+# 3. add paths to data frame
+plots %>% 
+  ungroup() %>%
+  mutate(path = paths) %>% 
+  select(plots, path)
+# 4. save
+plots %>% 
+  ungroup() %>%
+  mutate(path = paths) %>% 
+  rowwise() %>%
+  summarize(
+    ggsave(
+      path, 
+      plots, 
+      width = 9.5, 
+      height = 6.5,
+      dpi = 500
+    )
+  )
 
 ```
 
