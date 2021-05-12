@@ -188,23 +188,22 @@ plots <- est2 %>%
   mutate(plots = map2(data, District, ~{ 
     ggplot(.x, aes(`Academic Year`, v_2)) +
       geom_errorbar(mapping = aes(ymin = (v_2 - v_se_2), ymax = (v_2 + v_se_2))) +
-      geom_point(aes(`Academic Year`, v_2)) +
+      geom_point(aes(`Academic Year`, v_2, color = v_2)) + #this creates a color spectrum, not specific points
       guides(fill = "none") +
       labs(title = glue("Achievement Gap Estimates: {.y}"),
            subtitle = "Negative values indicate White students have higher average achievement \nPositive values indicate Hispanic/Latino students have higher average achievement", 
            x = "School Year",
            y = "Average achievement difference (SD units)",
-           caption = glue("Note: District has {.$n_schools} schools")) + #this doesn't work. I tried reordering the columns, but that won't allow the data to summarize the number of schools. It just categorizes them instead.
+           caption = glue("Note: District has {.$n_schools} schools")) + 
       geom_hline(yintercept = 0,
                  colour = "#ff0000")
     })
 ) 
 
 #To pull up a plot:
-plots$plots[[3]]
+plots$plots[[7]]
 
 #To do list:
-#add function to change number of schools per district
 #use an alternate method to reproduce the plots
 #add purple and blue color to points
 #add purple and blue color to "white" and "Hispanic/Latino"
