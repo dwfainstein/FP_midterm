@@ -64,7 +64,7 @@ combined_clean <- combined %>%
 Sum the n across grades and school for each district within each academic year, student group, and level. Calculate the number of schools (unique schools listed) for each district. Also move your data to a wider format where the student groups become new columns, filled by the district n. Remove districts that did not report numbers for one or both student groups (i.e., drop missing data from the new columns).
 
 ```{r summing_calculating}
-  sum_grouped <- combined_clean %>% 
+sum_grouped <- combined_clean %>% 
   group_by(`District`) %>% 
   mutate(n_schools = length(unique(`School`))) %>% 
   group_by(`Academic Year`, `District`, `Student Group`, `level`, `n_schools`) %>% 
@@ -186,22 +186,22 @@ plots <- est2 %>%
   nest() %>% 
   filter(District %in% dists) %>% 
   mutate(plots = map2(data, District, ~{ 
-    ggplot(.x, aes(`Academic Year`, v)) +
-      geom_errorbar(mapping = aes(ymin = (v - v_se), ymax = (v + v_se))) +
-      geom_point(aes(`Academic Year`, v)) +
+    ggplot(.x, aes(`Academic Year`, v_2)) +
+      geom_errorbar(mapping = aes(ymin = (v_2 - v_se_2), ymax = (v_2 + v_se_2))) +
+      geom_point(aes(`Academic Year`, v_2)) +
       guides(fill = "none") +
       labs(title = glue("Achievement Gap Estimates: {.y}"),
            subtitle = "Negative values indicate White students have higher average achievement \nPositive values indicate Hispanic/Latino students have higher average achievement", 
            x = "School Year",
            y = "Average achievement difference (SD units)",
-           caption = glue("Note: District has {n_schools} schools")) + #this doesn't work. I tried reordering the columns, but that won't allow the data to summarize the number of schools. It just categorizes them instead.
+           caption = glue("Note: District has {.$n_schools} schools")) + #this doesn't work. I tried reordering the columns, but that won't allow the data to summarize the number of schools. It just categorizes them instead.
       geom_hline(yintercept = 0,
                  colour = "#ff0000")
     })
 ) 
 
 #To pull up a plot:
-plots$plots[[1]]
+plots$plots[[3]]
 
 #To do list:
 #add function to change number of schools per district
