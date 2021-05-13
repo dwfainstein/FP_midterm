@@ -191,10 +191,11 @@ plots <- est2 %>%
       geom_point(aes(`Academic Year`, v_2, color = v_2)) + #this creates a color spectrum, not specific points
       guides(fill = "none") +
       labs(title = glue("Achievement Gap Estimates: {.y}"),
-           subtitle = "Negative values indicate White students have higher average achievement \nPositive values indicate Hispanic/Latino students have higher average achievement", 
+           subtitle = "Negative values indicate <b style='color:#D85EFA'>White</b> students have higher average achievement <br>\nPositive values indicate <b style='color:#4BA1F8'>Hispanic/Latino</b> students have higher average achievement", 
            x = "School Year",
            y = "Average achievement difference (SD units)",
            caption = glue("Note: District has {.$n_schools} schools")) + 
+       theme(plot.subtitle = element_markdown())+
       geom_hline(yintercept = 0,
                  colour = "#ff0000")
     })
