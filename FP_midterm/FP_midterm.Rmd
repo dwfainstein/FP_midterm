@@ -181,6 +181,7 @@ est2 %>%
            x = "School Year",
            y = "Average achievement difference (SD units)")
 # Now all plots:
+#Version 1
 plots <- est2 %>%
   group_by(District) %>% 
   nest() %>% 
@@ -202,12 +203,33 @@ plots <- est2 %>%
 ) 
 
 #To pull up a plot:
-plots$plots[[7]]
+plots$plots[[2]]
 
-#To do list:
-#use an alternate method to reproduce the plots
-#add purple and blue color to points
-#add purple and blue color to "white" and "Hispanic/Latino"
+
+#Version 2
+plots2 <- est2 %>% 
+  ungroup() %>% 
+  filter(District %in% dists) %>% 
+  nest_by(District) %>% 
+  summarize(plot = list(
+    ggplot(data, aes(as.numeric(as.factor(academic_year)), v_2)) +
+      geom_hline(yintercept = 0, 
+	               color = "#ff0000") +
+      geom_errorbar(mapping = aes(ymin = (v_2 - v_se_2), ymax = (v_2 + v_se_2))) +
+      geom_point(aes(`Academic Year`, v_2, color = v_2)) + #this creates a color spectrum, not specific points
+      scale_x_continuous(
+        breaks = 1:4,
+        labels = c("2014-2015", "2015-2016", "2016-2017", "2017-2018")
+      ) +
+      labs(title = glue::glue("Achievement Gap Estimates: {district}"),
+           subtitle = "Negative values indicate <span style='color:#D85EFA'>White</span> students have higher average achievement <br/>Positive values indicate <span style='color:#4BA1F8'>Hispanic/Latino</span> students have higher average achievement",
+           caption = glue::glue("Note: District included {unique(data$n_schools)} schools."),
+           x = "School year",
+           y = "Average achievement difference (SD units)") + 
+      theme( 
+        plot.title.position = "plot",
+        plot.subtitle = element_markdown())))
+
 ````
 
 ## Task 4
