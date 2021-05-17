@@ -221,14 +221,12 @@ plots2 <- est2 %>%
         breaks = 1:4,
         labels = c("2014-2015", "2015-2016", "2016-2017", "2017-2018")
       ) +
-      labs(title = glue::glue("Achievement Gap Estimates: {district}"),
+      labs(title = glue::glue("Achievement Gap Estimates: {.y}"),
            subtitle = "Negative values indicate <span style='color:#D85EFA'>White</span> students have higher average achievement <br/>Positive values indicate <span style='color:#4BA1F8'>Hispanic/Latino</span> students have higher average achievement",
-           caption = glue::glue("Note: District included {unique(data$n_schools)} schools."),
+           caption = glue::glue("Note: District included {.$n_schools} schools."),
            x = "School year",
            y = "Average achievement difference (SD units)") + 
-      theme( 
-        plot.title.position = "plot",
-        plot.subtitle = element_markdown())))
+      theme(plot.subtitle = element_markdown())))
 
 ````
 
